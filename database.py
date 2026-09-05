@@ -5,6 +5,25 @@ from psycopg2.extras import RealDictCursor
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 
+class PostgreSQLCursor:
+    def __init__(self, cursor):
+        self.cursor = cursor
+        self._lastrowid = None
+
+    @property
+    def lastrowid(self):
+        return self._lastrowid
+
+    def fetchone(self):
+        return self.cursor.fetchone()
+
+    def fetchall(self):
+        return self.cursor.fetchall()
+
+    def __iter__(self):
+        return iter(self.cursor)
+
+
 class PostgreSQLConnection:
     def __init__(self):
         self.connection = psycopg2.connect(
@@ -17,17 +36,21 @@ class PostgreSQLConnection:
 
         cursor = self.connection.cursor()
 
-        # PostgreSQL needs RETURNING id to provide lastrowid
-        if query.strip().upper().startswith("INSERT") and "RETURNING" not in query.upper():
+        is_insert = query.strip().upper().startswith("INSERT")
+
+        if is_insert and "RETURNING" not in query.upper():
             query = query.rstrip(";") + " RETURNING id"
 
         cursor.execute(query, params)
 
-        if query.strip().upper().startswith("INSERT"):
-            row = cursor.fetchone()
-            cursor.lastrowid = row["id"] if row else None
+        wrapped_cursor = PostgreSQLCursor(cursor)
 
-        return cursor
+        if is_insert:
+            row = cursor.fetchone()
+            if row:
+                wrapped_cursor._lastrowid = row["id"]
+
+        return wrapped_cursor
 
     def commit(self):
         self.connection.commit()
