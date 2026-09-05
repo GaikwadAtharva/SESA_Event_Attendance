@@ -1,6 +1,6 @@
 import os
 import psycopg2
-from psycopg2.extras import RealDictCursor
+from psycopg2.extras import DictCursor
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
@@ -28,7 +28,7 @@ class PostgreSQLConnection:
     def __init__(self):
         self.connection = psycopg2.connect(
             DATABASE_URL,
-            cursor_factory=RealDictCursor
+            cursor_factory=DictCursor
         )
 
     def execute(self, query, params=None):
@@ -47,6 +47,7 @@ class PostgreSQLConnection:
 
         if is_insert:
             row = cursor.fetchone()
+
             if row:
                 wrapped_cursor._lastrowid = row["id"]
 
@@ -73,6 +74,7 @@ def create_tables():
 
     connection = get_db_connection()
 
+    # Events
     connection.execute("""
         CREATE TABLE IF NOT EXISTS events (
             id SERIAL PRIMARY KEY,
@@ -82,6 +84,7 @@ def create_tables():
         )
     """)
 
+    # Participants
     connection.execute("""
         CREATE TABLE IF NOT EXISTS participants (
             id SERIAL PRIMARY KEY,
@@ -92,6 +95,7 @@ def create_tables():
         )
     """)
 
+    # Attendance
     connection.execute("""
         CREATE TABLE IF NOT EXISTS attendance (
             id SERIAL PRIMARY KEY,
@@ -105,6 +109,7 @@ def create_tables():
         )
     """)
 
+    # Organizers
     connection.execute("""
         CREATE TABLE IF NOT EXISTS organizers (
             id SERIAL PRIMARY KEY,
