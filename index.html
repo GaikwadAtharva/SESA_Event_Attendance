@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SESA | Event Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <main class="landing-page">
+
+        <!-- Background Decoration -->
+        <div class="background-orb orb-one"></div>
+        <div class="background-orb orb-two"></div>
+
+
+        <!-- Header -->
+        <header class="landing-header">
+
+            <div class="brand">
+
+                <div class="brand-logo">
+                    S
+                </div>
+
+                <div class="brand-text">
+
+                    <h2>SESA</h2>
+
+                    <span>
+                        Software Engineering Student Association
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="system-status">
+
+                <span class="status-dot"></span>
+
+                System Online
+
+            </div>
+
+        </header>
+
+
+
+        <!-- Main Hero -->
+        <section class="hero-section">
+
+            <div class="hero-content">
+
+                <p class="hero-eyebrow">
+                    SESA EVENT MANAGEMENT
+                </p>
+
+                <h1>
+                    Events made
+                    <span>simple.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Register for SESA events, manage participants,
+                    and track attendance through one centralized
+                    event management platform.
+                </p>
+
+            </div>
+
+
+
+            <!-- Role Selection -->
+            <div class="role-selection">
+
+                <p class="role-heading">
+                    Continue as
+                </p>
+
+
+
+                <!-- PARTICIPANT -->
+                <button
+                    type="button"
+                    class="role-card"
+                    onclick="openParticipant()">
+
+                    <div class="role-icon participant-icon">
+                        👤
+                    </div>
+
+
+                    <div class="role-content">
+
+                        <div class="role-title-row">
+
+                            <h2>
+                                Participant
+                            </h2>
+
+                            <span class="arrow">
+                                →
+                            </span>
+
+                        </div>
+
+
+                        <p>
+                            Explore upcoming SESA events
+                            and register to participate.
+                        </p>
+
+
+                        <div class="role-features">
+
+                            <span>
+                                ✓ View Events
+                            </span>
+
+                            <span>
+                                ✓ Register
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </button>
+
+
+
+                <!-- ORGANIZER -->
+                <button
+                    type="button"
+                    class="role-card"
+                    onclick="openOrganizer()">
+
+                    <div class="role-icon organizer-icon">
+                        🔐
+                    </div>
+
+
+                    <div class="role-content">
+
+                        <div class="role-title-row">
+
+                            <h2>
+                                Organizer
+                            </h2>
+
+                            <span class="arrow">
+                                →
+                            </span>
+
+                        </div>
+
+
+                        <p>
+                            Manage events, participants
+                            and attendance securely.
+                        </p>
+
+
+                        <div class="role-features">
+
+                            <span>
+                                ✓ Dashboard
+                            </span>
+
+                            <span>
+                                ✓ Attendance
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- Footer -->
+        <footer class="landing-footer">
+
+            <span>
+                © 2026 SESA
+            </span>
+
+            <span>
+                Secure Event Management Platform
+            </span>
+
+        </footer>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         ORGANIZER LOGIN MODAL
+         ===================================================== -->
+
+    <div
+        id="organizerModal"
+        class="modal-overlay">
+
+
+        <div class="login-modal">
+
+
+            <!-- Close -->
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeOrganizer()">
+
+                ×
+
+            </button>
+
+
+
+            <!-- Login Icon -->
+            <div class="login-icon">
+                🔐
+            </div>
+
+
+
+            <p class="modal-eyebrow">
+                ORGANIZER ACCESS
+            </p>
+
+
+
+            <h2>
+                Organizer Login
+            </h2>
+
+
+
+            <p class="modal-description">
+                Authorized SESA organizers can access
+                event management and attendance controls.
+            </p>
+
+
+
+            <!-- Login Form -->
+            <form id="organizerLoginForm">
+
+
+                <label for="organizerUsername">
+                    Username
+                </label>
+
+
+                <input
+                    type="text"
+                    id="organizerUsername"
+                    placeholder="Enter organizer username"
+                    autocomplete="username"
+                    required
+                >
+
+
+
+                <label for="organizerPassword">
+                    Password
+                </label>
+
+
+                <input
+                    type="password"
+                    id="organizerPassword"
+                    placeholder="Enter secret key"
+                    autocomplete="current-password"
+                    required
+                >
+
+
+
+                <!-- Error -->
+                <p
+                    id="loginError"
+                    class="login-error">
+                </p>
+
+
+
+                <!-- Login -->
+                <button
+                    type="submit"
+                    class="login-button">
+
+                    <span>
+                        Login to Dashboard
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
+
+            </form>
+
+
+
+            <!-- Security -->
+            <p class="security-note">
+                🔒 Organizer accounts are created by
+                SESA administrators.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>

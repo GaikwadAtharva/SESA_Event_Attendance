@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SESA | Organizer Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         ORGANIZER DASHBOARD
+    ====================================================== -->
+
+    <main class="organizer-page">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside class="organizer-sidebar">
+
+
+            <!-- BRAND -->
+
+            <div class="organizer-brand">
+
+                <div class="brand-logo">
+                    S
+                </div>
+
+                <div>
+                    <h2>SESA</h2>
+                    <span>Organizer Portal</span>
+                </div>
+
+            </div>
+
+
+            <!-- NAVIGATION -->
+
+            <nav class="organizer-nav">
+
+                <button class="nav-item active">
+
+                    <span>▦</span>
+
+                    Dashboard
+
+                </button>
+
+
+                <button class="nav-item">
+
+                    <span>◉</span>
+
+                    Events
+
+                </button>
+
+
+                <button class="nav-item">
+
+                    <span>👥</span>
+
+                    Participants
+
+                </button>
+
+
+                <button class="nav-item">
+
+                    <span>✓</span>
+
+                    Attendance
+
+                </button>
+
+            </nav>
+
+
+            <!-- SIDEBAR BOTTOM -->
+
+            <div class="sidebar-bottom">
+
+
+                <div class="organizer-user">
+
+                    <div class="user-avatar">
+                        A
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Organizer
+                        </strong>
+
+                        <span>
+                            SESA Admin
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="logout-button"
+                    onclick="window.location.href='/organizer/logout'"
+                >
+
+                    <span>↪</span>
+
+                    Logout
+
+                </button>
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- =================================================
+             MAIN CONTENT
+        ================================================== -->
+
+        <section class="organizer-content">
+
+
+            <!-- =================================================
+                 HEADER
+            ================================================== -->
+
+            <header class="organizer-header">
+
+                <div>
+
+                    <p class="dashboard-label">
+                        ORGANIZER DASHBOARD
+                    </p>
+
+
+                    <h1>
+                        Welcome back 👋
+                    </h1>
+
+
+                    <p>
+                        Manage your SESA events and track attendance.
+                    </p>
+
+                </div>
+
+
+                <div class="header-status">
+
+                    <span class="status-dot"></span>
+
+                    System Online
+
+                </div>
+
+            </header>
+
+
+
+            <!-- =================================================
+                 DASHBOARD STATISTICS
+            ================================================== -->
+
+            <section class="dashboard-stats">
+
+
+                <!-- TOTAL EVENTS -->
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ◉
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Events
+                        </span>
+
+                        <strong id="totalEvents">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- REGISTERED -->
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        👥
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Registered
+                        </span>
+
+                        <strong id="totalRegistered">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PRESENT -->
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Present
+                        </span>
+
+                        <strong id="totalPresent">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ABSENT -->
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ○
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Absent
+                        </span>
+
+                        <strong id="totalAbsent">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ATTENDANCE -->
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        %
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Attendance
+                        </span>
+
+                        <strong id="attendancePercentage">
+                            0%
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 EVENT MANAGEMENT
+            ================================================== -->
+
+            <section class="dashboard-section">
+
+
+                <div class="section-heading">
+
+
+                    <div>
+
+                        <p>
+                            EVENT MANAGEMENT
+                        </p>
+
+                        <h2>
+                            Select an Event
+                        </h2>
+
+                    </div>
+
+
+                    <!-- CREATE EVENT -->
+
+                    <button
+                        class="create-event-button"
+                        type="button"
+                    >
+
+                        <span>
+                            +
+                        </span>
+
+                        Create Event
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- EVENTS -->
+
+                <div
+                    id="organizerEvents"
+                    class="organizer-events-grid"
+                >
+
+                    <div class="dashboard-loading">
+
+                        Loading events...
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 PARTICIPANTS
+            ================================================== -->
+
+            <section class="dashboard-section">
+
+
+                <div class="section-heading">
+
+
+                    <div>
+
+                        <p>
+                            ATTENDANCE MANAGEMENT
+                        </p>
+
+                        <h2>
+                            Registered Participants
+                        </h2>
+
+                    </div>
+
+
+                    <!-- SEARCH -->
+
+                    <div class="participant-search">
+
+                        <span>
+                            ⌕
+                        </span>
+
+                        <input
+                            type="text"
+                            id="participantSearch"
+                            placeholder="Search name or email..."
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PARTICIPANTS TABLE -->
+
+                <div class="participants-table-wrapper">
+
+
+                    <table class="participants-table">
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Participant
+                                </th>
+
+                                <th>
+                                    College ID
+                                </th>
+
+                                <th>
+                                    Email
+                                </th>
+
+                                <th>
+                                    Attendance
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="participantsTable">
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="dashboard-loading"
+                                >
+
+                                    Select an event to view participants.
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         CREATE EVENT MODAL
+    ====================================================== -->
+
+    <div
+        id="createEventModal"
+        class="create-event-modal"
+        aria-hidden="true"
+    >
+
+
+        <!-- OVERLAY -->
+
+        <div
+            class="create-event-overlay"
+            data-close-modal
+        ></div>
+
+
+
+        <!-- MODAL -->
+
+        <div
+            class="create-event-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="createEventTitle"
+        >
+
+
+            <!-- HEADER -->
+
+            <div class="create-event-dialog-header">
+
+
+                <div>
+
+                    <span class="create-event-kicker">
+                        EVENT MANAGEMENT
+                    </span>
+
+                    <h2 id="createEventTitle">
+                        Create New Event
+                    </h2>
+
+                    <p>
+                        Add a new event to your SESA schedule.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="create-event-close"
+                    id="closeCreateEventModal"
+                    aria-label="Close"
+                >
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+
+            <!-- FORM -->
+
+            <form
+                id="createEventForm"
+                class="create-event-form"
+            >
+
+
+                <!-- EVENT NAME -->
+
+                <div class="create-event-field">
+
+                    <label for="eventName">
+                        Event Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="eventName"
+                        name="eventName"
+                        placeholder="e.g. SESA Tech Workshop"
+                        maxlength="100"
+                        autocomplete="off"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- DATE -->
+
+                <div class="create-event-field">
+
+                    <label for="eventDate">
+                        Event Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="eventDate"
+                        name="eventDate"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="create-event-field">
+
+                    <label for="eventDescription">
+
+                        Description
+
+                        <span>
+                            Optional
+                        </span>
+
+                    </label>
+
+                    <textarea
+                        id="eventDescription"
+                        name="eventDescription"
+                        placeholder="Briefly describe the event..."
+                        maxlength="500"
+                        rows="4"
+                    ></textarea>
+
+                </div>
+
+
+
+                <!-- ERROR -->
+
+                <div
+                    id="createEventError"
+                    class="create-event-error"
+                    role="alert"
+                    hidden
+                ></div>
+
+
+
+                <!-- ACTIONS -->
+
+                <div class="create-event-actions">
+
+
+                    <button
+                        type="button"
+                        class="create-event-cancel"
+                        id="cancelCreateEvent"
+                    >
+
+                        Cancel
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="create-event-submit"
+                        id="submitCreateEvent"
+                    >
+
+                        <span class="create-event-submit-text">
+                            Create Event
+                        </span>
+
+                        <span
+                            class="create-event-submit-loader"
+                            hidden
+                        >
+                            Creating...
+                        </span>
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         ORGANIZER JAVASCRIPT
+    ====================================================== -->
+
+    <script src="{{ url_for('static', filename='organizer.js') }}"></script>
+
+
+</body>
+
+</html>
