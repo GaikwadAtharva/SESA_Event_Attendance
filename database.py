@@ -5,16 +5,45 @@ from psycopg2.extras import RealDictCursor
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 
+class PostgreSQLConnection:
+    def __init__(self):
+        self.connection = psycopg2.connect(
+            DATABASE_URL,
+            cursor_factory=RealDictCursor
+        )
+
+    def execute(self, query, params=None):
+        query = query.replace("?", "%s")
+
+        cursor = self.connection.cursor()
+
+        # PostgreSQL needs RETURNING id to provide lastrowid
+        if query.strip().upper().startswith("INSERT") and "RETURNING" not in query.upper():
+            query = query.rstrip(";") + " RETURNING id"
+
+        cursor.execute(query, params)
+
+        if query.strip().upper().startswith("INSERT"):
+            row = cursor.fetchone()
+            cursor.lastrowid = row["id"] if row else None
+
+        return cursor
+
+    def commit(self):
+        self.connection.commit()
+
+    def rollback(self):
+        self.connection.rollback()
+
+    def close(self):
+        self.connection.close()
+
+
 def get_db_connection():
     if not DATABASE_URL:
         raise RuntimeError("DATABASE_URL environment variable is not set")
 
-    connection = psycopg2.connect(
-        DATABASE_URL,
-        cursor_factory=RealDictCursor
-    )
-
-    return connection
+    return PostgreSQLConnection()
 
 
 def create_tables():
