@@ -1,11 +1,10 @@
 from flask import Flask, request, jsonify, render_template, session, redirect
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from database import create_tables, get_db_connection
 import os
 import secrets
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "sesa-production-secret-key"
 
 # Secret used to protect organizer login sessions
 app.secret_key = os.environ.get(
@@ -13,21 +12,78 @@ app.secret_key = os.environ.get(
     "sesa-development-secret-key"
 )
 
+# Create database tables
 create_tables()
 
 
-# =========================
+# =========================================================
+# CREATE DEFAULT ORGANIZER
+# =========================================================
+
+def create_default_organizer():
+    """
+    Creates the SESA organizer account if it does not already exist.
+
+    Username and password are taken from environment variables.
+    """
+
+    username = os.environ.get("ORGANIZER_USERNAME", "sesa_admin")
+    password = os.environ.get("ORGANIZER_PASSWORD")
+
+    # Do not create an account if no password has been configured
+    if not password:
+        print("WARNING: ORGANIZER_PASSWORD is not set.")
+        return
+
+    connection = get_db_connection()
+
+    existing_organizer = connection.execute(
+        """
+        SELECT id
+        FROM organizers
+        WHERE username = ?
+        """,
+        (username,)
+    ).fetchone()
+
+    if not existing_organizer:
+
+        password_hash = generate_password_hash(password)
+
+        connection.execute(
+            """
+            INSERT INTO organizers
+            (username, password_hash)
+            VALUES (?, ?)
+            """,
+            (
+                username,
+                password_hash
+            )
+        )
+
+        connection.commit()
+
+        print(f"Organizer account '{username}' created.")
+
+    connection.close()
+
+
+create_default_organizer()
+
+
+# =========================================================
 # PUBLIC WEBSITE
-# =========================
+# =========================================================
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-# =========================
+# =========================================================
 # ORGANIZER DASHBOARD PAGE
-# =========================
+# =========================================================
 
 @app.route("/organizer")
 def organizer_dashboard():
@@ -39,9 +95,9 @@ def organizer_dashboard():
     return render_template("organizer.html")
 
 
-# =========================
+# =========================================================
 # ORGANIZER AUTHENTICATION
-# =========================
+# =========================================================
 
 @app.route("/api/organizer/login", methods=["POST"])
 def organizer_login():
@@ -52,6 +108,7 @@ def organizer_login():
     password = data.get("password", "")
 
     if not username or not password:
+
         return jsonify({
             "error": "Username and password are required"
         }), 400
@@ -73,6 +130,7 @@ def organizer_login():
         organizer["password_hash"],
         password
     ):
+
         return jsonify({
             "error": "Invalid organizer credentials"
         }), 401
@@ -101,6 +159,7 @@ def organizer_logout():
 def organizer_status():
 
     if "organizer_id" not in session:
+
         return jsonify({
             "logged_in": False
         })
@@ -114,6 +173,7 @@ def organizer_status():
 def organizer_required():
 
     if "organizer_id" not in session:
+
         return jsonify({
             "error": "Organizer login required"
         }), 401
@@ -121,9 +181,9 @@ def organizer_required():
     return None
 
 
-# =========================
+# =========================================================
 # EVENT MANAGEMENT
-# =========================
+# =========================================================
 
 @app.route("/api/events", methods=["POST"])
 def create_event():
@@ -140,6 +200,7 @@ def create_event():
     description = data.get("description", "").strip()
 
     if not name or not date:
+
         return jsonify({
             "error": "Event name and date are required"
         }), 400
@@ -148,10 +209,15 @@ def create_event():
 
     cursor = connection.execute(
         """
-        INSERT INTO events (name, date, description)
+        INSERT INTO events
+        (name, date, description)
         VALUES (?, ?, ?)
         """,
-        (name, date, description)
+        (
+            name,
+            date,
+            description
+        )
     )
 
     connection.commit()
@@ -205,6 +271,7 @@ def get_event(event_id):
     connection.close()
 
     if not event:
+
         return jsonify({
             "error": "Event not found"
         }), 404
@@ -212,9 +279,9 @@ def get_event(event_id):
     return jsonify(dict(event))
 
 
-# =========================
+# =========================================================
 # PARTICIPANT REGISTRATION
-# =========================
+# =========================================================
 
 @app.route(
     "/api/events/<int:event_id>/register",
@@ -230,6 +297,7 @@ def register_for_event(event_id):
     contact = data.get("contact", "").strip()
 
     if not name or not college_id or not email:
+
         return jsonify({
             "error": "Name, College ID and Email are required"
         }), 400
@@ -279,7 +347,10 @@ def register_for_event(event_id):
                 WHERE event_id = ?
                 AND participant_id = ?
                 """,
-                (event_id, participant_id)
+                (
+                    event_id,
+                    participant_id
+                )
             ).fetchone()
 
             if existing_registration:
@@ -353,9 +424,9 @@ def register_for_event(event_id):
         }), 400
 
 
-# =========================
+# =========================================================
 # VIEW REGISTRATION
-# =========================
+# =========================================================
 
 @app.route(
     "/api/registration/<registration_token>",
@@ -404,9 +475,9 @@ def get_registration(registration_token):
     return jsonify(dict(registration))
 
 
-# =========================
+# =========================================================
 # ORGANIZER PARTICIPANTS
-# =========================
+# =========================================================
 
 @app.route(
     "/api/events/<int:event_id>/participants",
@@ -512,9 +583,9 @@ def search_participants(event_id):
     ])
 
 
-# =========================
+# =========================================================
 # MARK ATTENDANCE
-# =========================
+# =========================================================
 
 @app.route(
     "/api/events/<int:event_id>/participants/<int:participant_id>/attendance",
@@ -583,9 +654,9 @@ def mark_attendance(event_id, participant_id):
     }), 200
 
 
-# =========================
+# =========================================================
 # EVENT DASHBOARD
-# =========================
+# =========================================================
 
 @app.route(
     "/api/events/<int:event_id>/dashboard",
@@ -673,9 +744,9 @@ def event_dashboard(event_id):
     })
 
 
-# =========================
+# =========================================================
 # ORGANIZER LOGOUT PAGE
-# =========================
+# =========================================================
 
 @app.route("/organizer/logout")
 def organizer_logout_page():
@@ -686,9 +757,9 @@ def organizer_logout_page():
     return redirect("/")
 
 
-# =========================
+# =========================================================
 # RUN APPLICATION
-# =========================
+# =========================================================
 
 if __name__ == "__main__":
     app.run(debug=True)
