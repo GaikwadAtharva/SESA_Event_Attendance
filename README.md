@@ -1,14 +1,14 @@
 # SESA Event Attendance Tracker
 
-A web-based **Event Attendance Tracker** developed as a technical task for the **Software Engineering Students Association (SESA)** Technical Team selection.
+A full-stack web application developed for the **Software Engineering Students Association (SESA) Technical Team Selection Task**.
 
-The application allows students to register for an event and provides organizers with a secure interface to search participants, verify registrations, mark attendance, and monitor attendance statistics through a dashboard.
+The application manages event registrations and allows organizers to search participants, mark attendance, and monitor attendance statistics through a dashboard. The application uses **PostgreSQL for persistent data storage**, ensuring that events, registrations, and attendance records remain available even after application restarts or redeployments.
 
 ---
 
-## 🚀 Live Demo
+## 🚀 Live Application
 
-**Live Application:**  
+**Live Demo:**  
 https://sesa-event-attendance.onrender.com
 
 **GitHub Repository:**  
@@ -16,135 +16,201 @@ https://github.com/GaikwadAtharva/SESA_Event_Attendance
 
 ---
 
-## 📌 Overview
+# 📌 1. Application Overview
 
-Managing attendance manually at college events can be time-consuming and error-prone. This project provides a simple digital solution where:
+The **SESA Event Attendance Tracker** is designed to solve a common event-management problem: efficiently registering students and verifying their attendance at the entrance of an event.
 
-1. Students register for an event using their details.
-2. Their registration is stored in a database.
-3. Organizers can search for registered participants at the entrance.
-4. The organizer can verify the participant's details.
-5. Attendance can be marked as **Present**.
-6. Attendance remains stored even after refreshing the page.
-7. A dashboard displays overall attendance statistics.
+The system has two main sides:
 
-The project focuses on building a **simple, reliable, and easy-to-understand system** rather than adding unnecessary complexity.
+### Student Side
+
+Students can:
+
+- View available events
+- Register for an event
+- Enter their:
+  - Name
+  - College ID
+  - Email
+  - Contact number
+- Receive a unique registration token
+- View their registration information and attendance status
+
+### Organizer Side
+
+Organizers can:
+
+- Log in securely
+- Create events
+- View registered participants
+- Search participants
+- Search using:
+  - Name
+  - Email
+  - Contact number
+- View participant details
+- Mark registered participants as **Present**
+- View attendance statistics
+- Monitor Present, Absent and Registered counts
 
 ---
 
-# ✨ Features
+# ✨ 2. Key Features
 
-## 👨‍🎓 Participant Registration
+## Event Management
+
+Organizers can create events with:
+
+- Event name
+- Event date
+- Event description
+
+Events are stored permanently in the PostgreSQL database.
+
+---
+
+## Student Registration
 
 Students can register for an event by providing:
 
-- Full Name
+- Name
 - College ID
-- Email Address
-- Contact Number
+- Email
+- Contact number
 
-The system validates the registration and prevents duplicate registrations using the College ID.
+The system prevents duplicate registration using the student's College ID.
 
 ---
 
-## 🔎 Participant Search
+## Participant Search
 
 Organizers can search registered participants using:
 
 - Name
 - Email
-- College ID
-- Contact Number
+- Contact number
 
-This makes it easier to find a participant quickly during event entry.
+The participant's current attendance status is displayed.
 
 ---
 
-## ✅ Attendance Management
+## Attendance Management
 
-The organizer can:
+When a student arrives at the event:
 
-- Search for a registered participant.
-- View participant details.
-- Check their current attendance status.
-- Mark the participant as **Present**.
-- Prevent attendance from being accidentally marked multiple times.
+1. The organizer searches for the student.
+2. The system checks whether the student is registered.
+3. If registered, the student's details are displayed.
+4. The current attendance status is shown.
+5. The organizer can mark the student as **Present**.
 
-If a participant is not registered, the system clearly indicates that no matching registered participant was found.
+If the student is not registered, the system clearly indicates that the participant was not found.
+
+---
+
+## Attendance Persistence
+
+Attendance is stored in PostgreSQL.
+
+Therefore:
+
+- Refreshing the page does not remove attendance.
+- Closing and reopening the website does not remove attendance.
+- Application restarts do not remove attendance.
+- Render redeployments do not remove application data.
 
 ---
 
 ## 📊 Attendance Dashboard
 
-The organizer dashboard displays:
+The organizer dashboard provides:
 
 - Total Registered
 - Total Present
-- Total Absent / Not Yet Marked
+- Total Absent
 - Attendance Percentage
 
-The statistics are updated after attendance is marked.
+Example:
+
+| Statistic | Value |
+|---|---:|
+| Registered | 5 |
+| Present | 3 |
+| Absent | 2 |
+| Attendance | 60% |
 
 ---
 
-## 🔐 Organizer Authentication
+# 🛠️ 3. Technologies Used
 
-The organizer dashboard is protected by a login system.
+### Frontend
 
-Organizer credentials are configured through environment variables instead of being hard-coded into the source code.
+- HTML5
+- CSS3
+- JavaScript
 
-The application uses Flask sessions to maintain the organizer's login state.
+### Backend
+
+- Python
+- Flask
+
+### Database
+
+- PostgreSQL
+
+### Authentication
+
+- Flask Sessions
+- Werkzeug Password Hashing
+
+### Deployment
+
+- Render
+
+### Version Control
+
+- Git
+- GitHub
 
 ---
 
-# 🛠️ Technologies Used
-
-| Technology | Purpose |
-|---|---|
-| Python | Backend programming |
-| Flask | Web framework |
-| SQLite | Database |
-| HTML | Page structure |
-| CSS | User interface and styling |
-| JavaScript | Dynamic functionality and API interaction |
-| Gunicorn | Production WSGI server |
-| Render | Cloud deployment |
-| GitHub | Source code management |
-
----
-
-# 🏗️ Application Architecture
-
-The application follows a simple web application architecture:
+# 🏗️ 4. System Architecture
 
 ```text
-                 ┌──────────────────────┐
-                 │      Student         │
-                 │   Registration UI     │
-                 └──────────┬───────────┘
-                            │
-                            ▼
-                 ┌──────────────────────┐
-                 │      Flask App       │
-                 │      (Backend)       │
-                 └──────────┬───────────┘
-                            │
-                 ┌──────────┴───────────┐
-                 │                      │
-                 ▼                      ▼
-        ┌─────────────────┐    ┌─────────────────┐
-        │   SQLite DB     │    │ Organizer Panel │
-        │                 │    │                 │
-        │ Events          │    │ Search          │
-        │ Participants    │    │ Attendance      │
-        │ Attendance      │    │ Dashboard       │
-        │ Organizers      │    │                 │
-        └─────────────────┘    └─────────────────┘
+                    ┌──────────────────────┐
+                    │      Student         │
+                    │   Web Interface      │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │      Flask App       │
+                    │      Backend         │
+                    └──────────┬───────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              │                │                │
+              ▼                ▼                ▼
+        Event APIs       Registration APIs   Attendance APIs
+              │                │                │
+              └────────────────┼────────────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │     PostgreSQL       │
+                    │      Database        │
+                    └──────────────────────┘
+                               ▲
+                               │
+                    ┌──────────┴───────────┐
+                    │      Organizer       │
+                    │      Dashboard       │
+                    └──────────────────────┘
 ```
 
 ---
 
-# 📂 Project Structure
+# 📁 5. Project Structure
 
 ```text
 SESA_Event_Attendance/
@@ -164,240 +230,210 @@ SESA_Event_Attendance/
     └── organizer.js
 ```
 
-### File Description
-
-**app.py**
-
-Contains the Flask application, routes, authentication, registration handling, participant APIs, attendance management, and dashboard APIs.
-
-**database.py**
-
-Handles SQLite database initialization, table creation, and database-related operations.
-
-**index.html**
-
-Student-facing registration page.
-
-**organizer.html**
-
-Organizer login/dashboard interface.
-
-**style.css**
-
-Contains the application's visual styling and responsive interface.
-
-**script.js**
-
-Handles student registration and frontend interactions.
-
-**organizer.js**
-
-Handles organizer search, participant display, attendance marking, and dashboard updates.
-
-**requirements.txt**
-
-Contains the Python dependencies required to run the application.
-
 ---
 
-# 🗄️ Database Design
+# 🗄️ 6. Database Design
 
-The application uses **SQLite** for persistent data storage.
+The application uses PostgreSQL with four main tables.
 
-The main tables are:
+## Events
 
-### Events
-
-Stores event information.
-
-Example fields:
+Stores information about SESA events.
 
 ```text
-id
-name
-description
-date
-```
-
-### Participants
-
-Stores registered student information.
-
-Example fields:
-
-```text
-id
-name
-college_id
-email
-contact
-```
-
-### Attendance
-
-Connects participants with events and stores their attendance status.
-
-Example fields:
-
-```text
-id
-event_id
-participant_id
-status
-registration_token
-```
-
-### Organizers
-
-Stores organizer authentication information.
-
-Example fields:
-
-```text
-id
-username
-password_hash
+events
+├── id
+├── name
+├── date
+└── description
 ```
 
 ---
 
-# 🔄 Application Workflow
+## Participants
 
-## Student Registration
+Stores student registration information.
 
 ```text
-Student
-   ↓
-Opens Registration Page
-   ↓
-Enters Details
-   ↓
-Flask Backend Validates Data
-   ↓
-Checks College ID
-   ↓
-Creates Participant
-   ↓
-Creates Attendance Record
-   ↓
-Registration Successful
+participants
+├── id
+├── name
+├── college_id
+├── email
+└── contact
 ```
+
+The `college_id` is unique to prevent duplicate student records.
 
 ---
 
-## Organizer Attendance
+## Attendance
+
+Connects participants with events and stores their attendance.
+
+```text
+attendance
+├── id
+├── event_id
+├── participant_id
+├── status
+└── registration_token
+```
+
+The combination of:
+
+```text
+event_id + participant_id
+```
+
+is unique, preventing duplicate attendance records for the same event.
+
+---
+
+## Organizers
+
+Stores organizer login credentials.
+
+```text
+organizers
+├── id
+├── username
+└── password_hash
+```
+
+Passwords are stored as hashes rather than plain text.
+
+---
+
+# 🔄 7. Application Workflow
+
+## Event Creation
 
 ```text
 Organizer Login
       ↓
-Organizer Dashboard
+Create Event
       ↓
-Search Participant
+Event stored in PostgreSQL
       ↓
-Participant Found?
-   ↙           ↘
- Yes            No
-  ↓              ↓
-Show Details    Show Not Found
-  ↓
-Check Status
-  ↓
+Event becomes available to students
+```
+
+## Student Registration
+
+```text
+Student selects Event
+      ↓
+Enters registration details
+      ↓
+Backend validates information
+      ↓
+Participant stored
+      ↓
+Attendance record created
+      ↓
+Initial status = Absent
+      ↓
+Registration token generated
+```
+
+## Entrance Attendance
+
+```text
+Organizer searches student
+          ↓
+Student found?
+     ↙          ↘
+   YES           NO
+    ↓             ↓
+Show details    Show "Not Found"
+    ↓
+Check status
+    ↓
 Mark Present
-  ↓
-Database Updated
-  ↓
-Dashboard Statistics Updated
+    ↓
+Save to PostgreSQL
 ```
 
 ---
 
-# 🔎 Search and Verification
+# 🔐 8. Organizer Authentication
 
-At the entrance of an event, organizers can search for a participant using information such as:
+The organizer dashboard is protected using session-based authentication.
 
-- Name
-- Email
-- College ID
-- Contact Number
+An organizer must log in before accessing organizer functionality.
 
-The application searches the registered participant list.
+The application uses:
 
-If a match is found, the participant's information and current attendance status are displayed.
+- Flask Sessions
+- Environment variables for credentials
+- Werkzeug password hashing
 
-If there is no matching registered participant, the organizer receives a clear **not found** indication.
+The organizer password is **not stored directly in the source code**.
 
-This helps prevent unregistered students from being incorrectly marked as attendees.
-
----
-
-# ✅ Attendance Persistence
-
-Attendance is stored in the SQLite database rather than only in browser memory.
-
-Therefore:
-
-- Refreshing the page does not reset attendance.
-- Present participants remain Present.
-- Participants who have not been marked remain Absent / Not Yet Marked.
-- Dashboard statistics are calculated from the stored attendance records.
-
-This ensures that attendance remains reliable throughout the event.
-
----
-
-# 📊 Dashboard Calculation
-
-The dashboard calculates attendance using the stored attendance records.
-
-### Attendance Percentage
-
-```text
-Attendance Percentage =
-(Total Present / Total Registered) × 100
-```
-
-For example:
-
-```text
-Registered = 5
-Present = 3
-Absent = 2
-
-Attendance Percentage = (3 / 5) × 100
-                       = 60%
-```
-
----
-
-# 🔐 Organizer Authentication & Security
-
-Organizer access is protected through a login system.
-
-Credentials are configured using environment variables:
+Environment variables used:
 
 ```text
 ORGANIZER_USERNAME
 ORGANIZER_PASSWORD
 FLASK_SECRET_KEY
+DATABASE_URL
 ```
 
-The organizer password is stored using a password hash rather than storing the plain-text password directly in the database.
-
-The organizer routes also require an authenticated session.
-
-Sensitive credentials are therefore not committed to GitHub.
+Sensitive credentials are kept outside the GitHub repository.
 
 ---
 
-# ⚙️ Installation and Setup
+# 💾 9. Data Storage
 
-## 1. Clone the Repository
+Initially, the application used a local SQLite database.
+
+However, local SQLite storage is not suitable for persistent deployment on the Render free web service because the application's local filesystem can be reset during redeployments or restarts.
+
+Therefore, the final deployed version uses:
+
+**PostgreSQL hosted through Render**
+
+The Flask application connects to PostgreSQL using the `DATABASE_URL` environment variable.
+
+This provides persistent storage for:
+
+- Events
+- Participants
+- Registrations
+- Attendance
+- Organizer accounts
+
+---
+
+# 📦 10. Requirements / Dependencies
+
+The main dependencies are:
+
+```text
+Flask
+gunicorn
+psycopg2-binary
+Werkzeug
+```
+
+The complete dependency list is available in:
+
+```text
+requirements.txt
+```
+
+---
+
+# 💻 11. Local Setup
+
+## Step 1 — Clone the repository
 
 ```bash
 git clone https://github.com/GaikwadAtharva/SESA_Event_Attendance.git
 ```
 
-Move into the project directory:
+Move into the project:
 
 ```bash
 cd SESA_Event_Attendance
@@ -405,21 +441,7 @@ cd SESA_Event_Attendance
 
 ---
 
-## 2. Create a Virtual Environment
-
-```bash
-python -m venv venv
-```
-
-Activate it on Windows:
-
-```bash
-venv\Scripts\activate
-```
-
----
-
-## 3. Install Dependencies
+## Step 2 — Install dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -427,57 +449,60 @@ pip install -r requirements.txt
 
 ---
 
-## 4. Configure Environment Variables
+## Step 3 — Configure environment variables
 
-Set the following environment variables:
+The application requires a PostgreSQL database connection.
+
+Set:
 
 ```text
-ORGANIZER_USERNAME=sesa_admin
-ORGANIZER_PASSWORD=your_secure_password
-FLASK_SECRET_KEY=your_secret_key
+DATABASE_URL
+ORGANIZER_USERNAME
+ORGANIZER_PASSWORD
+FLASK_SECRET_KEY
 ```
 
-The actual password and secret key should not be committed to GitHub.
+Do not commit these values to GitHub.
 
 ---
 
-## 5. Run the Application
+## Step 4 — Run the application
 
 ```bash
 python app.py
 ```
 
-The application will start locally and can be accessed through the Flask development server.
+The application will run locally using Flask.
 
 ---
 
-# ☁️ Deployment
+# ☁️ 12. Deployment
 
 The application is deployed using **Render**.
 
-### Deployment Configuration
+### Web Service
+
+The Flask application runs using:
 
 ```text
-Runtime:
-Python 3
-
-Build Command:
-pip install -r requirements.txt
-
-Start Command:
 gunicorn app:app
-
-Branch:
-main
 ```
 
-Environment variables are configured through Render's environment-variable settings.
+### Database
 
-The SQLite database is created automatically when the application starts.
+The application uses a Render PostgreSQL database.
+
+The database connection is provided through:
+
+```text
+DATABASE_URL
+```
+
+This keeps the application data separate from the web service's temporary filesystem.
 
 ---
 
-# 🧪 Testing
+# 🧪 13. Testing
 
 The application was tested using sample participant data.
 
@@ -489,173 +514,193 @@ The application was tested using sample participant data.
 | Sneha Joshi | MIT004 | sneha.joshi@example.com | 9000000004 |
 | Rahul Deshmukh | MIT005 | rahul.deshmukh@example.com | 9000000005 |
 
-A test scenario with:
+Example attendance test:
 
 ```text
 Total Registered = 5
-Total Present = 3
-Total Absent = 2
-```
-
-should result in:
-
-```text
-Attendance Percentage = 60%
+Present = 3
+Absent = 2
+Attendance = 60%
 ```
 
 ---
 
-# 🧩 Technical Challenge
+# 🧩 14. Technical Challenge
 
-One of the important technical challenges was ensuring that attendance remains persistent after refreshing the application.
+### Challenge
 
-A frontend-only solution would lose attendance information when the page was refreshed.
+The first deployed version used SQLite for data storage.
 
-To solve this, attendance was stored in SQLite and connected to the corresponding event and participant.
+Although SQLite worked correctly during local development, data created on the deployed Render application did not persist reliably after service restarts or redeployments.
 
-Whenever attendance is marked:
+### Solution
+
+The database architecture was changed from SQLite to PostgreSQL.
+
+The Flask application was modified to connect to PostgreSQL using:
 
 ```text
-Organizer
-   ↓
-Frontend Request
-   ↓
-Flask API
-   ↓
-SQLite Database
-   ↓
-Attendance Status Updated
+DATABASE_URL
 ```
 
-The dashboard then reads the latest information from the database.
+The required PostgreSQL Python driver was added:
 
-This approach makes the attendance system more reliable than storing the state only in JavaScript.
+```text
+psycopg2-binary
+```
+
+This allowed the application to maintain persistent event, registration and attendance data.
+
+### What I Learned
+
+This helped me understand an important difference between:
+
+- Local application storage
+- Deployment environments
+- Persistent databases
+- Application filesystem
+- Environment variables
+- Production database configuration
 
 ---
 
-# 💡 Design Decisions
+# 🎯 15. Design Decisions
 
-### Why Flask?
+## Why Flask?
 
 Flask was selected because:
 
 - It is lightweight.
-- It is easy to understand.
-- It is suitable for a small web application.
-- It allows clear separation between frontend and backend.
-- It provides simple routing and session support.
-
-### Why SQLite?
-
-SQLite was selected because:
-
-- No separate database server is required.
-- It is easy to configure.
-- It provides persistent storage.
-- It is suitable for a small event attendance system.
-
-### Why Vanilla JavaScript?
-
-JavaScript was used without a frontend framework because the project does not require the additional complexity of React or another framework.
-
-This keeps the application lightweight and easier to understand.
+- It is easy to structure for a small web application.
+- It provides routing and request handling.
+- It works well with REST-style APIs.
+- It allowed me to focus on application logic rather than unnecessary framework complexity.
 
 ---
 
-# 📋 Assumptions
+## Why PostgreSQL?
 
-The project makes the following assumptions:
+PostgreSQL was selected because:
 
-1. Each event has a defined list of registered participants.
-2. College ID is treated as the primary identifier for preventing duplicate registration.
-3. Only authenticated organizers can access attendance management.
-4. A participant who has not yet been marked Present is considered Absent / Not Yet Marked.
-5. The application is intended for college-level events with a manageable number of participants.
-6. Organizer credentials are supplied through environment variables.
-7. SQLite is sufficient for the expected scale of the technical task.
+- It provides persistent relational storage.
+- It is suitable for deployed applications.
+- It supports relationships between events, participants and attendance.
+- It prevents data loss caused by temporary application files.
+- It provides stronger database functionality than a local file-based database for a deployed application.
 
 ---
 
-# 📝 Requirement Mapping
+## Why Separate Events, Participants and Attendance?
 
-The implementation addresses the requirements of the SESA Technical Team task:
+The database separates these entities so that:
 
-| Requirement | Implementation |
+- A participant can register for multiple events.
+- Each event can have many participants.
+- Attendance can be tracked separately for every event.
+- Duplicate registrations can be prevented.
+- Attendance records remain structured and easy to query.
+
+---
+
+# ⚠️ 16. Assumptions
+
+The following assumptions were made:
+
+1. Each student has a unique College ID.
+2. A student cannot register for the same event more than once.
+3. A participant who has registered but has not yet arrived is considered **Absent / Not Yet Marked**.
+4. Only authenticated organizers can mark attendance.
+5. Organizers are responsible for verifying the student's identity at the entrance.
+6. The application is designed for SESA event management rather than large-scale public event management.
+7. Organizer credentials are configured through environment variables.
+8. PostgreSQL is used as the persistent production database.
+
+---
+
+# 📋 17. Technical Task Requirement Mapping
+
+| Task Requirement | Implementation |
 |---|---|
-| Registration data | Name, College ID, Email, Contact |
-| Participant list | Organizer participant list |
+| Accept registration data | Student registration form |
+| Name | Participant database |
+| College ID | Participant database |
+| Email | Participant database |
+| Optional contact | Participant database |
+| View participant list | Organizer dashboard |
 | Search by name | Implemented |
 | Search by email | Implemented |
 | Search by contact | Implemented |
-| College ID handling | Duplicate/registration validation |
-| Attendance marking | Present status |
-| Not registered handling | Clear not-found result |
-| Attendance persistence | SQLite database |
-| Present vs Absent | Stored attendance status |
-| Dashboard | Registered, Present, Absent, Percentage |
-| Organizer authentication | Login + session |
+| Verify registered student | Organizer search |
+| Show participant details | Organizer dashboard |
+| Mark Present | Attendance API |
+| Handle unregistered student | "Not Found" response |
+| Persist attendance | PostgreSQL |
+| Distinguish Present/Absent | Attendance status |
+| Total registered | Dashboard |
+| Total present | Dashboard |
+| Total absent | Dashboard |
+| Attendance percentage | Dashboard |
+| Organizer authentication | Flask session authentication |
 | Deployment | Render |
 | Source code | GitHub |
 
 ---
 
-# 🚀 Future Improvements
+# 🚀 18. Future Improvements
 
-Possible improvements for a production-level version include:
+Possible improvements include:
 
-- QR-code based registration verification
-- QR-code based attendance
-- CSV import/export
-- Multiple organizer accounts
-- Role-based access control
-- Event creation from the organizer dashboard
 - Year-wise attendance statistics
 - Branch-wise attendance statistics
-- Attendance reports
-- Database migration to PostgreSQL for larger deployments
-- Improved audit logging
-- Email confirmation after registration
-
-These features were intentionally not added to the current version to keep the project focused on the core requirements.
+- QR-code based registration verification
+- CSV participant import
+- CSV attendance export
+- Multiple organizer roles
+- Event editing and deletion
+- Better audit logging
+- Email confirmation for registrations
+- Advanced dashboard charts
+- Pagination for large participant lists
 
 ---
 
-# 🎥 Demo
+# 🎥 19. Demo
 
-**Live Demo:**  
+**Live Application:**
+
 https://sesa-event-attendance.onrender.com
 
-**Source Code:**  
-https://github.com/GaikwadAtharva/SESA_Event_Attendance
+**Source Code:**
 
-A screen recording can also be provided as part of the SESA technical task submission.
+https://github.com/GaikwadAtharva/SESA_Event_Attendance
 
 ---
 
-# 👨‍💻 Author
+# 👨‍💻 20. Author
 
 **Atharva Gaikwad**
 
-B.Tech — Computer Science (Software Engineering)
+B.Tech — Computer Science / Software Engineering
 
 MIT Academy of Engineering
 
 ---
 
-# 🎯 Project Purpose
+# 📌 Project Purpose
 
-This project was developed as part of the **SESA Software Engineering Students Association Technical Team Selection Task**.
+This project was developed as part of the **SESA Technical Team Selection Task**.
 
-The primary goal was to demonstrate:
+The primary goal was not to build an unnecessarily complex system, but to demonstrate:
 
-- Problem-solving ability
-- Practical software development
-- Backend and frontend integration
+- Problem solving
+- Backend development
 - Database design
-- Data persistence
-- Authentication
 - API development
+- Frontend integration
+- Authentication
+- Data persistence
 - Deployment
-- Understanding of real-world requirements
+- Debugging
+- Understanding of technical decisions
 
-The implementation prioritizes **functionality, reliability, simplicity, and maintainability** over unnecessary complexity.
+The project was developed with a focus on **functionality, reliability, simplicity and practical software engineering.**
